@@ -28,4 +28,7 @@ function MyDiff()
   silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
 endfunction
 
+colorscheme Lucius
+
+map <F5> :!C:\python27\python.exe %
 
