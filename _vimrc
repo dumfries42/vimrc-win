@@ -95,4 +95,26 @@ filetype plugin indent on
 set guioptions-=m
 set guioptions-=T
 
+cs a E:/mine/mycode/python/cscope.out
 
+"ctags使用的配置,中间自动进行父路径查找,不知道是不是正确
+set tags=tags;
+set autochdir
+
+let Tlist_Ctags_Cmd='C:/Vim/vim73/ctags.exe'
+let Tlist_Show_One_File=1
+let Tlist_Exit_OnlyWindow=1
+let Tlist_Use_Left_Window=1
+let Tlist_Auto_Open=1
+let Tlist_Auto_Update=1
+let Tlist_Compact_Format=1
+let Tlist_Enable_Fold_Column=0
+let Tlist_Process_File_Always=1
+let Tlist_File_Fold_Auto_Close=0
+let Tlist_Sort_Type="order"
+let Tlist_WinWidth=30
+let Tlist_Close_On_Select=0
+let Tlist_Use_SingleClick=1
+let g:winManagerWindowLayout='TagList|BufExplorer'
+let g:miniBufExplMapCTabSwitchBufs=1
+nnoremap <silent> <F8> :TlistToggle<CR>
