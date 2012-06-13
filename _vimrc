@@ -120,7 +120,7 @@ let g:winManagerWindowLayout='TagList|BufExplorer'
 let g:miniBufExplMapCTabSwitchBufs=1
 nnoremap <silent> <F8> :TlistToggle<CR>
 
-"设置自动补全部分,自动补全括号还是有帮助的
+"自动补全括号,引号部分还是有问题的
 :inoremap ( ()<ESC>i
 :inoremap ) <c-r>=ClosePair(')')<CR> 
 :inoremap { {}<ESC>i
@@ -140,3 +140,9 @@ function ClosePair(char)
     endif
 endf
 
+"括号自动补齐功能总是和shift+enter一起使用,
+"shift+enter提供直接跳转到下一行开始编辑
+"常用的按键:<ESC>
+"<C-G>:Ctrl+G;<UP>;<C-LeftMouse>;<S-F11>;<Space>空格;<Tab>;<CR>就是Enter
+:inoremap <S-CR> <ESC>o
+:inoremap <C-CR> <ESC>A:<ESC>o
