@@ -94,6 +94,7 @@ filetype plugin indent on
 
 set guioptions-=m
 set guioptions-=T
+set guifont=Bitstream_Vera_Sans_Mono:h9 "设置字体和大小的
 
 cs a E:/mine/mycode/python/cscope.out
 
@@ -118,3 +119,24 @@ let Tlist_Use_SingleClick=1
 let g:winManagerWindowLayout='TagList|BufExplorer'
 let g:miniBufExplMapCTabSwitchBufs=1
 nnoremap <silent> <F8> :TlistToggle<CR>
+
+"设置自动补全部分,自动补全括号还是有帮助的
+:inoremap ( ()<ESC>i
+:inoremap ) <c-r>=ClosePair(')')<CR> 
+:inoremap { {}<ESC>i
+:inoremap } <c-r>=ClosePair('}')<CR>
+:inoremap [ []<ESC>i
+:inoremap ] <c-r>=ClosePair(']')<CR>
+:inoremap < <><ESC>i
+:inoremap > <c-r>=ClosePair('>')<CR>
+:inoremap " ""<ESC>i
+:inoremap ' ''<ESC>i
+
+function ClosePair(char)
+    if getline('.')[col('.')-1]==a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endf
+
