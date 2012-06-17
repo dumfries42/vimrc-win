@@ -1,53 +1,143 @@
-"编码设置部分;github等都是用的utf-8,所以vim编辑出来的使用utf-8,不然是乱码
+"fofore's vimrc
+"Minming Qian <qianminming@gmail.com> www.fofore.com
+"Fork me in GITHUB https://github.com/fofore/vimrc
+
+"For pathogen.vim :auto load all plugins in 'vimpath'/bundle
+let g:pathogen_disabled = [] 
+if !has('gui_running') 
+    call add(g:pathogen_disabled, 'powerline')
+endif
+call pathogen#infect()
+
+"--------------------------------------------------------------------------------
+" General Settings
+"-------------------------------------------------------------------------------- 
+
+set nocompatible            " not compatible with the old-fashion vi mode
+set bs=2                    " allow backspacing over everything in insert mode
+set history=50              " keep 50 lines of command line history
+set ruler                   " show the cursor position all the time
+set autoread                " auto read when file is changed from outside
+set nowrap                  " wrat setting
+set textwidth=200           " set the max textwith
+
+filetype on                 " Enable filetype detection
+filetype indent on          " Enable fileytpe-specific indenting
+filetype plugin on          " Enable filetype-specific plugins
+
+
+" auto reload _vimrc when editing it
+if has('win32')
+    autocmd! bufwritepost _vimrc source $VIM\_vimrc
+else
+    autocmd! bufwritepost .vimrc source ~/.vimrc
+endif
+
+
+" GUI color and font settings
+if has('gui_running')
+    colors lucius
+    set cursorline          " highlight current line
+    highlight CursorLine    guibg=#003853 ctermbg=24 gui=none cterm=none
+    set guioptions-=m
+    set guioptions-=T
+    set guifont=Bitstream_Vera_Sans_Mono:h11
+else
+    colors lucius
+endif
+
+
+syntax enable
+syntax on                   " syntax highlight
+set hls                     " search highlighting
+
+" disable sound on errors
+set noerrorbells
+set novisualbell
+set tm=500
+
+set autochdir
+set nu                      " show line number 
+set clipboard=unnamed       " yank to the system register (*)  by default
+set showmatch               " Cursor shows matching ) and }
+set showmode                " show current mode
+set wildchar=<TAB>          " start wild expansion in the command line using <TAB>
+set wildmenu                " wild char completion menu
+
+" ignore these files while expanding wild chars
+set wildignore=*.o,*.class,*.pyc
+
+
+set nobackup                " no *~backup file
+set incsearch               " incremental search
+set copyindent              " copy the previous indentation on autoindenting
+set autoindent              " auto indenting
+set smartindent             " smart indenting
+set ignorecase              " ignore case when searching
+set smartcase               " ignore case if search pattern is all lowercase,case-sensitive othterwise
+set smarttab                " insert tabs on the start of a line according to
+
+" TAB settings
+set tabstop=4               " tab length
+set shiftwidth=4            
+set expandtab               " equal tab to number of spaces, replace <TAB> with spaces
+autocmd Filetype Makefile set noexpandtab
+
+" status line
+set laststatus=2
+set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \ 
+set statusline+=\ \ \ [%{&ff}/%Y] 
+set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\ 
+set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
+
+function! CurDir()
+    let curdir = substitute(getcwd(), $HOME, "~", "")
+    return curdir
+endfunction
+
+function! HasPaste()
+    if &paste
+        return '[PASTE]'
+    else
+        return ''
+    endif
+endfunction
+
+" C/C++ specific settings
+autocmd FileType c,cpp,cc set cindent comments=sr:/*,mb:*,el:*/,:// cino=>s,e0,n0,f0,{0,}0,^-1s,:0,=s,g0,h1s,p2,t0,+2,(2,)20,*30
+
+
+"--------------------------------------------------------------------------------
+" Encoding Settings
+"-------------------------------------------------------------------------------- 
 set enc=utf-8
 set tenc=utf-8
 set fenc=utf-8
-set fencs=utf-8,usc-bomm,gbk,cp936 
-"依次尝试各种打开编码去打开文件,因为本地有很多文件不是utf-8编码格式的
+set fencs=ucs-bom,utf-8,gbk,cp936,big5,gb2312,latin1 
 
-"解决提示信息乱码
-language messages zh_CN.utf-8
 
-"菜单乱码
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
+"--------------------------------------------------------------------------------
+" Menu Settings
+"-------------------------------------------------------------------------------- 
+if has('win32')
+    language messages zh_CN.utf-8
+    source $VIMRUNTIME/delmenu.vim
+    source $VIMRUNTIME/menu.vim
+endif
 
-"for vi compatible, we don't need
-set nocompatible
 
-"the vim runtime dir setted when install 
-source $VIMRUNTIME/vimrc_example.vim
-source $VIMRUNTIME/mswin.vim
-behave mswin
+"--------------------------------------------------------------------------------
+" Mswin Settings
+"-------------------------------------------------------------------------------- 
+if has('win32')
+    source $VIMRUNTIME/vimrc_example.vim    "the vim runtime dir setted when install 
+    source $VIMRUNTIME/mswin.vim
+    behave mswin
+endif
 
-"system default setting
-set diffexpr=MyDiff()
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
 
-"设置配色方案，设置colors文件夹下有的
-colorscheme Lucius
+
+
 
 "按键映射，F5快捷键，映射到命令行运行python脚本
 map <F5> :!C:\python27\python.exe %
@@ -58,46 +148,14 @@ if has('multi_byte_ime')
     highlight CursorIM guibg=Purple guifg=NONE
 endif
 
-set hls "highlight search
 
-set is "increase search 
 
-set nu "show line number 
 
-"设置的等号前后不能有空格
-set backspace=indent,eol,start
 
-set nobackup
 
-set cursorline "set cursor line highlight
-
-set tabstop=4 "tab spaces
-
-set shiftwidth=4 "自动缩进的字符宽度
-
-set et "equal tab to number of spaces
-
-set smarttab "只一次退格就可删除等价的tab,而不是多删除space
-
-"自动缩进
-set autoindent
-set smartindent
-
-"自动切换当前目录
-set autochdir
-
-"语法高亮
-syntax on
-
-"开启文件自动识别,文件类型插件,启用正对文件类型的自动缩进,不过好像这个版本默认就是开启的
-filetype plugin indent on
-
-set guioptions-=m
-set guioptions-=T
-set guifont=Bitstream_Vera_Sans_Mono:h9 "设置字体和大小的
-
-cs a E:/mine/mycode/python/cscope.out
-
+"--------------------------------------------------------------------------------
+" Ctags Configuration
+"--------------------------------------------------------------------------------
 "ctags使用的配置,中间自动进行父路径查找,不知道是不是正确
 set tags=tags;
 set autochdir
@@ -122,17 +180,13 @@ nnoremap <silent> <F8> :TlistToggle<CR>
 
 "自动补全括号,引号部分还是有问题的
 :inoremap ( ()<ESC>i
-:inoremap ) <c-r>=ClosePair(')')<CR> 
+:inoremap ) <c-r>=CloseThePair(')')<CR> 
 :inoremap { {}<ESC>i
-:inoremap } <c-r>=ClosePair('}')<CR>
+:inoremap } <c-r>=CloseThePair('}')<CR>
 :inoremap [ []<ESC>i
-:inoremap ] <c-r>=ClosePair(']')<CR>
-:inoremap < <><ESC>i
-:inoremap > <c-r>=ClosePair('>')<CR>
-:inoremap " ""<ESC>i
-:inoremap ' ''<ESC>i
+:inoremap ] <c-r>=CloseThePair(']')<CR>
 
-function ClosePair(char)
+function CloseThePair(char)
     if getline('.')[col('.')-1]==a:char
         return "\<Right>"
     else
@@ -146,3 +200,22 @@ endf
 "<C-G>:Ctrl+G;<UP>;<C-LeftMouse>;<S-F11>;<Space>空格;<Tab>;<CR>就是Enter
 :inoremap <S-CR> <ESC>o
 :inoremap <C-CR> <ESC>A:<ESC>o
+
+
+
+
+
+"使用鼠标映射
+let g:vimwiki_use_mouse=1
+"不要将驼峰式词组作为 wiki 词条
+let g:vimwiki_camel_case=0
+let g:vimwiki_list=[{'path':'D:/mysite/html/','path_html':'D:/mysite/html/','auto_export':1,}]
+
+"vimfile diretory
+if has("win32")
+    let $VIMFILES = $VIM.'/vimfiles'
+else
+    let $VIMFILES = $HOME.'/.vim'
+endif
+
+
