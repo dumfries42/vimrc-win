@@ -1,7 +1,7 @@
 #!/bin/sh
 VIMHOME=~/.vim
 
-warn() {
+warn(){
     echo "$1" >&2
 }
 
