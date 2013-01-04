@@ -25,3 +25,6 @@
 [submodule "bundle/taglist.vim"]
 	path = bundle/taglist.vim
 	url = git://github.com/vim-scripts/taglist.vim.git
+[submodule "bundle/winmanager"]
+	path = bundle/winmanager
+	url = git://github.com/vim-scripts/winmanager.git
