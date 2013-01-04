@@ -1,11 +1,11 @@
 #!/bin/sh
 VIMHOME=~/.vim 
 
-warn(){
+warn() {
     echo "$1" >&2
 }
 
-die(){
+die() {
     warn "$1"
     exit 1
 }
