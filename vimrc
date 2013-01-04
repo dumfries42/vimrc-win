@@ -4,9 +4,6 @@
 
 "For pathogen.vim :auto load all plugins in 'vimpath'/bundle
 let g:pathogen_disabled = [] 
-if !has('gui_running') 
-    call add(g:pathogen_disabled, 'powerline')
-endif
 call pathogen#infect()
 
 "--------------------------------------------------------------------------------
@@ -36,12 +33,14 @@ endif
 
 " GUI color and font settings
 if has('gui_running')
-    colors lucius
+    colors moria
     set cursorline          " highlight current line
     highlight CursorLine    guibg=#003853 ctermbg=24 gui=none cterm=none
-    set guioptions-=m
-    set guioptions-=T
-    set guifont=Bitstream_Vera_Sans_Mono:h11
+    set guioptions-=m       "hide the menu toolbar
+    set guioptions-=T       "hide the tool toolbar
+    set guioptions-=r       "hide the ride scroll bar
+    set guioptions-=L       "hide the left scroll bar
+    set guifont=Mensch\ for\ Powerline:h10
 else
     colors lucius
 endif
@@ -61,7 +60,7 @@ set nu                      " show line number
 set clipboard=unnamed       " yank to the system register (*)  by default
 set showmatch               " Cursor shows matching ) and }
 set showmode                " show current mode
-set wildchar=<TAB>          " start wild expansion in the command line using <TAB>
+set wildchar=<TAB>          " start wild expansion in the command linpathogene using <TAB>
 set wildmenu                " wild char completion menu
 
 " ignore these files while expanding wild chars
@@ -71,24 +70,35 @@ set wildignore=*.o,*.class,*.pyc
 set nobackup                " no *~backup file
 set incsearch               " incremental search
 set copyindent              " copy the previous indentation on autoindenting
-set autoindent              " auto indenting
-set smartindent             " smart indenting
 set ignorecase              " ignore case when searching
 set smartcase               " ignore case if search pattern is all lowercase,case-sensitive othterwise
-set smarttab                " insert tabs on the start of a line according to
 
-" TAB settings
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Text, tab and indent related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Use spaces instead of tabs
+set expandtab
+
+"Be smart when using tabs
+set smarttab
+
+"1 tab == 4spaces
 set tabstop=4               " tab length
 set shiftwidth=4            
-set expandtab               " equal tab to number of spaces, replace <TAB> with spaces
+set autoindent
+set smartindent
+set wrap
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => End of this section
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 autocmd Filetype Makefile set noexpandtab
 
-" status line
+" status line by powerline
 set laststatus=2
-set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \ 
-set statusline+=\ \ \ [%{&ff}/%Y] 
-set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\ 
-set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
+let g:Powerline_symbols = 'fancy'
 
 function! CurDir()
     let curdir = substitute(getcwd(), $HOME, "~", "")
@@ -100,7 +110,7 @@ function! HasPaste()
         return '[PASTE]'
     else
         return ''
-    endif
+    endifcygwin
 endfunction
 
 " C/C++ specific settings
@@ -110,20 +120,24 @@ autocmd FileType c,cpp,cc set cindent comments=sr:/*,mb:*,el:*/,:// cino=>s,e0,n
 "--------------------------------------------------------------------------------
 " Encoding Settings
 "-------------------------------------------------------------------------------- 
-set enc=utf-8
-set tenc=utf-8
-set fenc=utf-8
-set fencs=ucs-bom,utf-8,gbk,cp936,big5,gb2312,latin1 
-
-
-"--------------------------------------------------------------------------------
-" Menu Settings
-"-------------------------------------------------------------------------------- 
-if has('win32')
-    language messages zh_CN.utf-8
-    source $VIMRUNTIME/delmenu.vim
-    source $VIMRUNTIME/menu.vim
+set encoding=utf-8
+set termencoding=utf-8
+if has("win32")
+	set fileencoding=chinese
+else
+    set fileencoding=utf-8
 endif
+set fileencodings=ucs-bom,utf-8,gbk,cp936,big5,gb2312,latin1 
+
+
+"---------------------------------------
+" Menu Settings, the message and the menu in English, this is so good
+"---------------------------------------
+language messages en_US
+set langmenu=en_US
+let $LANG='en_US'
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
 
 
 "--------------------------------------------------------------------------------
@@ -135,14 +149,9 @@ if has('win32')
     behave mswin
 endif
 
-
-
-
-
-"按键映射，F5快捷键，映射到命令行运行python脚本
+map <F6> :!C:\ruby193\bin\ruby.exe %
 map <F5> :!C:\python27\python.exe %
 
-"编译选项中包换了ime，则插入模式下的光标是紫色的
 if has('multi_byte_ime')
     "highlight Cursor guibg=Green guifg=NONE
     highlight CursorIM guibg=Purple guifg=NONE
@@ -150,72 +159,82 @@ endif
 
 
 
+"----------------------------------
+" full screen VIM and let VIM biggest after start VIM
+"----------------------------------
+map <F11> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+"if has('gui_running') && has("win32")
+"    au GUIEnter * simalt ~x
+"endif
 
 
+""""""""""""""""""""""""""""""
+" => Visual mode related
+""""""""""""""""""""""""""""""
+" Visual mode pressing * or # searches for the current selection
+" Super useful! From an idea by Michael Naumann
+vnoremap <silent> * :call VisualSelection('f')<CR>
+vnoremap <silent> # :call VisualSelection('b')<CR>
 
-"--------------------------------------------------------------------------------
-" Ctags Configuration
-"--------------------------------------------------------------------------------
-"ctags使用的配置,中间自动进行父路径查找,不知道是不是正确
+""""""""""""""""""""""""""""""
+" => fencview setting, fancy vim is used to resolve the messy chinese problems
+""""""""""""""""""""""""""""""
+let g:fencview_autodetect = 1
+
+
+""""""""""""""""""""""""""""""
+" => CtrlP setting, keyboard map
+""""""""""""""""""""""""""""""
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+
+""""""""""""""""""""""""""""""
+" => c make new
+""""""""""""""""""""""""""""""
+autocmd FileType c,cpp map <buffer> <leader><spaautocomplpop work with snipmatece> :w<cr>:make<cr>
+let mapleader=","
+nmap <leader>cn :cn<cr>
+nmap <leader>cp :cp<cr>
+nmap <leader>cw :cw 10<cr>
+
+""""""""""""""""""""""""""""""
+" => minibufexpl setting
+""""""""""""""""""""""""""""""
+let g:miniBufExplMapCTabSwitchBufs = 1
+let g:miniBufExplMapWindowNavVim = 1
+
+""""""""""""""""""""""""""""""
+" => makeprg for c files
+""""""""""""""""""""""""""""""
+set makeprg=gcc\ -Wall\ -o\ %<\ %<.c
+
+""""""""""""""""""""""""""""""
+" => ctags 
+""""""""""""""""""""""""""""""
+"let g:ctags_statusline=1
+let g:ctags_regenerate=1
+let g:ctags_title=1
+let Tlist_Ctags_Cmd="c:/vim/vim73/ctags"
+let Tlist_Show_Menu=1
 set tags=tags;
-set autochdir
+nmap <F9> <ESC>:!ctags -R *<CR>
 
-let Tlist_Ctags_Cmd='C:/Vim/vim73/ctags.exe'
+""""""""""""""""""""""""""""""
+" => taglist 
+""""""""""""""""""""""""""""""
 let Tlist_Show_One_File=1
 let Tlist_Exit_OnlyWindow=1
-let Tlist_Use_Left_Window=1
-let Tlist_Auto_Open=1
-let Tlist_Auto_Update=1
-let Tlist_Compact_Format=1
-let Tlist_Enable_Fold_Column=0
-let Tlist_Process_File_Always=1
-let Tlist_File_Fold_Auto_Close=0
-let Tlist_Sort_Type="order"
-let Tlist_WinWidth=30
-let Tlist_Close_On_Select=0
-let Tlist_Use_SingleClick=1
-let g:winManagerWindowLayout='TagList|BufExplorer'
-let g:miniBufExplMapCTabSwitchBufs=1
 nnoremap <silent> <F8> :TlistToggle<CR>
 
-"自动补全括号,引号部分还是有问题的
-:inoremap ( ()<ESC>i
-:inoremap ) <c-r>=CloseThePair(')')<CR> 
-:inoremap { {}<ESC>i
-:inoremap } <c-r>=CloseThePair('}')<CR>
-:inoremap [ []<ESC>i
-:inoremap ] <c-r>=CloseThePair(']')<CR>
-
-function CloseThePair(char)
-    if getline('.')[col('.')-1]==a:char
-        return "\<Right>"
-    else
-        return a:char
-    endif
-endf
-
-"括号自动补齐功能总是和shift+enter一起使用,
-"shift+enter提供直接跳转到下一行开始编辑
-"常用的按键:<ESC>
-"<C-G>:Ctrl+G;<UP>;<C-LeftMouse>;<S-F11>;<Space>空格;<Tab>;<CR>就是Enter
-:inoremap <S-CR> <ESC>o
-:inoremap <C-CR> <ESC>A:<ESC>o
+""""""""""""""""""""""""""""""
+" => autocomplpop work with snipmate
+""""""""""""""""""""""""""""""
+let g:acp_behaviorSnipmateLength=1
+let g:acp_ignorecaseOption=1
 
 
-
-
-
-"使用鼠标映射
-let g:vimwiki_use_mouse=1
-"不要将驼峰式词组作为 wiki 词条
-let g:vimwiki_camel_case=0
-let g:vimwiki_list=[{'path':'D:/mysite/html/','path_html':'D:/mysite/html/','auto_export':1,}]
-
-"vimfile diretory
-if has("win32")
-    let $VIMFILES = $VIM.'/vimfiles'
-else
-    let $VIMFILES = $HOME.'/.vim'
-endif
-
-
+""""""""""""""""""""""""""""""
+" => winmanager
+""""""""""""""""""""""""""""""
+let g:winManagerWindowLayout='FileExplorer|TagList'
+nmap wm :WMToggle<CR>
