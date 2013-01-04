@@ -238,3 +238,5 @@ let g:acp_ignorecaseOption=1
 """"""""""""""""""""""""""""""
 let g:winManagerWindowLayout='FileExplorer|TagList'
 nmap wm :WMToggle<CR>
+
+
