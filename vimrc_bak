@@ -22,11 +22,6 @@ filetype on                 " Enable filetype detection
 filetype indent on          " Enable fileytpe-specific indenting
 filetype plugin on          " Enable filetype-specific plugins
 
-" input method setting 
-if has("gui_running")  
-    set imactivatekey=D-space  
-    inoremap <ESC> <ESC>:set iminsert=0<CR>  
-endif
 
 " auto reload _vimrc when editing it
 if has('win32')
@@ -79,6 +74,7 @@ set ignorecase              " ignore case when searching
 set smartcase               " ignore case if search pattern is all lowercase,case-sensitive othterwise
 
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -102,7 +98,7 @@ autocmd Filetype Makefile set noexpandtab
 
 " status line by powerline
 set laststatus=2
-let g:Powerline_symbols = 'unicode'
+let g:Powerline_symbols = 'fancy'
 
 function! CurDir()
     let curdir = substitute(getcwd(), $HOME, "~", "")
@@ -124,9 +120,8 @@ autocmd FileType c,cpp,cc set cindent comments=sr:/*,mb:*,el:*/,:// cino=>s,e0,n
 "--------------------------------------------------------------------------------
 " Encoding Settings
 "-------------------------------------------------------------------------------- 
-set encoding=utf-8
-set termencoding=utf-8
-set fileencoding=chinese
+"set encoding=utf-8
+"set termencoding=utf-8
 set fileencodings=ucs-bom,utf-8,gbk,cp936,big5,gb2312,latin1 
 
 
